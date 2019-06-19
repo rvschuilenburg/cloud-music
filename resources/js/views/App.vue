@@ -39,43 +39,40 @@
             <div class="container">
                 <div class="row justify-content-center">
                     <div class="col-md-8">
-                        <router-view></router-view>
+                        <router-view :queue="queue" v-on:play-track="playTrack"></router-view>
                     </div>
                 </div>
             </div>
         </main>
 
         <footer class="footer mt-auto py-3">
-          <div id="player"></div>
-            sticky foot
+            <player v-bind:current-track="track"></player>
         </footer>
     </div>
 </template>
 <script>
+    import Player from '../components/Player'
+
     export default {
+        data: function() {
+            return {
+                queue: [
+                    {title: 'Jidenna - Long Live the Chief', id: 'H_AQFnqMY3E'},
+                    {title: 'Dizzee Rascal - Bassline Junkie', id: 'D1gl46hh3sQ'},
+                    {title: 'Evol Intent - The Ladies', id: 'g1UEr6oSHsU'}
+                ],
+                track: {}
+            }
+        },
         mounted: function() {
             this.$nextTick(function() {
-                setTimeout(() => {
-                    player = new YT.Player('player', {
-                        height: '70',
-                        width: '70',
-                        playerVars: { 'controls': 0 , 'showinfo': 0, 'modestbranding': 1, 'iv_load_policy': 3, 'playsinline': 1, 'autoplay': 0},
-                        events: {
-                            'onReady': this.preSelectSong,
-                            'onStateChange': this.onPlayerStateChange
-                        }
-                    })
-                    
-                },1000)
+                this.track = this.queue[0]
             })
         },
+        components: { Player },
         methods: {
-            preSelectSong: function() {
-                console.log('preselecting song!')
-                player.loadVideoById('Glabf3Oeoi4')
-            },
-            onPlayerStateChange: function() {
-                console.log('state is changing')
+           playTrack: function(track) {
+                this.track = track
             }
         },
     }
