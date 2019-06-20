@@ -20,10 +20,39 @@
                         <td><b>{{ result.snippet.title }}</b><br />{{ result.snippet.description }}</td>
                         <td>
                             <a class="btn-primary btn-sm" @click.prevent="previewTrack(result)" href="">preview</a><br />
-                            <a class="btn-primary btn-sm" @click.prevent="previewTrack(result)" href="">queue</a>
+                            <a class="btn-primary btn-sm" @click.prevent="openTrackModal(result)" href="">save</a>
                         </td>
                     </tr>
                 </table>
+            </div>
+        </div>
+        <div class="modal fade" id="trackModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title">Save this track</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <form v-on:submit.prevent="saveTrack">
+                      <div class="form-group">
+                        <label class="col-form-label">Artist:</label>
+                        <input type="text" class="form-control" v-model="selected.artist">
+                      </div>
+                      <div class="form-group">
+                        <label class="col-form-label">Title:</label>
+                        <input type="text" class="form-control" v-model="selected.title">
+                      </div>
+                      <input type="submit" style="display:none" />
+                    </form>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" v-on:click="saveTrack">Save changes</button>
+                  </div>
+                </div>
             </div>
         </div>
     </div>
@@ -33,7 +62,8 @@
         data: function() {
             return {
                 query: '',
-                results: []
+                results: [],
+                selected: { id: '', artist: '', title: ''}
             }
         },
         mounted: function() {
@@ -62,6 +92,24 @@
             previewTrack: function(result) {
                 var track = { title: result.snippet.title, id: result.id.videoId }
                 this.$emit('play-track', track)
+            },
+            openTrackModal: function(result) {
+                var title_parts = result.snippet.title.split(" - ")
+                if(title_parts.length === 2) {
+                    var artist = title_parts[0]
+                    var title = title_parts[1]
+                } else {
+                    var artist = ''
+                    var title = result.snippet.title
+                }
+                var selected = {id: result.id.videoId, artist: artist, title: title}
+                this.selected = selected
+                $('#trackModal').modal('show')
+            },
+            saveTrack: function() {
+                $('#trackModal').modal('hide')
+                alert('saving track!')
+                console.log(this.selected)
             }
         },
     }
