@@ -12,6 +12,7 @@
                     <ul class="navbar-nav mr-auto">
                         <li class="nav-item"><router-link class="nav-link" :to="{ name: 'queue' }">Queue</router-link></li>
                         <li class="nav-item"><router-link class="nav-link" :to="{ name: 'library' }">Library</router-link></li>
+                        <li class="nav-item"><router-link class="nav-link" :to="{ name: 'search' }">Search</router-link></li>
                     </ul>
 
                     <!-- Right Side Of Navbar -->

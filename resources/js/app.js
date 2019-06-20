@@ -8,6 +8,7 @@ Vue.use(VueRouter)
 import App from './views/App'
 import Library from './views/Library'
 import Queue from './views/Queue'
+import Search from './views/Search'
 
 const router = new VueRouter({
     mode: 'history',
@@ -21,6 +22,11 @@ const router = new VueRouter({
             path: '/library',
             name: 'library',
             component: Library,
+        },
+        {
+            path: '/search',
+            name: 'search',
+            component: Search,
         },
     ],
 });
