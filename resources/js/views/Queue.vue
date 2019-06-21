@@ -15,8 +15,8 @@
                         <td>{{ item.track.artist }}</td>
                         <td>{{ item.track.title }}</td>
                         <td>
-                            <a class="btn-primary btn-sm" @click.prevent="$emit('play-track', item.track)" href=""> play </a>
-                            <a class="btn-danger btn-sm" @click.prevent="$emit('un-queue-track', item)" href=""> remove </a>
+                            <a class="btn-primary btn-sm" @click.prevent="$emit('play-track', item.track)" href=""><font-awesome-icon icon="play" /></a>
+                            <a class="btn-danger btn-sm" @click.prevent="$emit('un-queue-track', item)" href=""><font-awesome-icon icon="trash" /></a>
                         </td>
                     </tr>
                 </table>

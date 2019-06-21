@@ -1,9 +1,16 @@
 <template>
-    <div>
-        <div id="player"></div>
-        <a @click.prevent="playTrack" href=""> play </a>
-        <a @click.prevent="pauseTrack" href=""> pause </a>
-        <a @click.prevent="stopTrack" href=""> stop </a>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col">
+                <div id="player"></div>
+            </div>
+            <div class="col-11">
+                <h2>{{ this.currentTrack.artist }} - {{ this.currentTrack.title }}</h2>
+                <a class="btn-primary btn" @click.prevent="playTrack" href=""><font-awesome-icon icon="play" /></a>
+                <a class="btn-primary btn" @click.prevent="pauseTrack" href=""><font-awesome-icon icon="pause" /></a>
+                <a class="btn-primary btn" @click.prevent="stopTrack" href=""><font-awesome-icon icon="stop" /></a>
+            </div>
+        </div>
     </div>
 </template>
 <script>
@@ -13,8 +20,8 @@
             this.$nextTick(function() {
                 setTimeout(() => {
                     player = new YT.Player('player', {
-                        height: '70',
-                        width: '70',
+                        height: '80',
+                        width: '80',
                         playerVars: { 'controls': 0 , 'showinfo': 0, 'modestbranding': 1, 'iv_load_policy': 3, 'playsinline': 1, 'autoplay': 0},
                         events: {
                             'onReady': this.preSelectSong,

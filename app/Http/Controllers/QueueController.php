@@ -20,6 +20,7 @@ class QueueController extends Controller
         $queue->user_id = $request->user()->id;
         $queue->order = $max + 1;
         $queue->save();
+
         return 'OK';
     }
 
@@ -31,6 +32,7 @@ class QueueController extends Controller
     public function remove(Queue $queue)
     {
         $queue->delete();
+
         return 'OK';
     }
 }

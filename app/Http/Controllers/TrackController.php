@@ -21,7 +21,7 @@ class TrackController extends Controller
         $track->title = $request->title;
         $track->user_id = $request->user()->id;
         $track->save();
-        
+
         return 'OK';
     }
 

@@ -8,8 +8,9 @@
                         <div class="col">
                             <input type="text" class="form-control" v-model="query" placeholder="Search Query">
                         </div>
-                        <div class="col-md-3">
-                            <input type="submit" class="btn btn-primary btn-block" value="Search">
+                        <div class="col-md-2">
+                            <input type="submit" style="display:none;">
+                            <a v-on:click.prevent="submitSearch" class="btn btn-primary btn-block" href=""><font-awesome-icon icon="search" /></a>
                         </div>
                     </div>
                 </form>
@@ -18,9 +19,9 @@
                     <tr v-for="result in results">
                         <td><img v-bind:src="result.snippet.thumbnails.default.url" /></td>
                         <td><b>{{ result.snippet.title }}</b><br />{{ result.snippet.description }}</td>
-                        <td>
-                            <a class="btn-primary btn-sm" @click.prevent="previewTrack(result)" href="">preview</a><br />
-                            <a class="btn-primary btn-sm" @click.prevent="openTrackModal(result)" href="">save</a>
+                        <td class="col-md-2">
+                            <a class="btn-primary btn" @click.prevent="previewTrack(result)" href=""><font-awesome-icon icon="play" /></a>
+                            <a class="btn-success btn" @click.prevent="openTrackModal(result)" href=""><font-awesome-icon icon="save" /></a>
                         </td>
                     </tr>
                 </table>

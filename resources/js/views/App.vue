@@ -52,7 +52,7 @@
             </div>
         </main>
 
-        <footer class="footer mt-auto py-3">
+        <footer class="fixed-bottom bg-white">
             <player v-bind:current-track="track" v-on:playback-ended="playbackEnded"></player>
         </footer>
     </div>

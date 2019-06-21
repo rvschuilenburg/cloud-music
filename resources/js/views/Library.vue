@@ -13,8 +13,8 @@
                         <td>{{ track.artist }}</td>
                         <td>{{ track.title }}</td>
                         <td>
-                            <a class="btn-primary btn-sm" @click.prevent="$emit('play-track', track)" href="">play</a>
-                            <a class="btn-primary btn-sm" @click.prevent="$emit('queue-track', track)" href="">queue</a>
+                            <a class="btn-primary btn-sm" @click.prevent="$emit('play-track', track)" href=""><font-awesome-icon icon="play" /></a>
+                            <a class="btn-primary btn-sm" @click.prevent="$emit('queue-track', track)" href=""><font-awesome-icon icon="list" /></a>
                         </td>
                     </tr>
                 </table>
