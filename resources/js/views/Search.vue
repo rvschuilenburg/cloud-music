@@ -63,13 +63,8 @@
             return {
                 query: '',
                 results: [],
-                selected: { id: '', artist: '', title: ''}
+                selected: { youtube_id: '', artist: '', title: ''}
             }
-        },
-        mounted: function() {
-            this.$nextTick(function() {
-                console.log(this.queue)
-            })
         },
         methods: {
             submitSearch: function() {
@@ -90,7 +85,7 @@
                 });  
             },
             previewTrack: function(result) {
-                var track = { title: result.snippet.title, id: result.id.videoId }
+                var track = { title: result.snippet.title, youtube_id: result.id.videoId }
                 this.$emit('play-track', track)
             },
             openTrackModal: function(result) {
@@ -102,14 +97,13 @@
                     var artist = ''
                     var title = result.snippet.title
                 }
-                var selected = {id: result.id.videoId, artist: artist, title: title}
+                var selected = {youtube_id: result.id.videoId, artist: artist, title: title}
                 this.selected = selected
                 $('#trackModal').modal('show')
             },
             saveTrack: function() {
                 $('#trackModal').modal('hide')
-                alert('saving track!')
-                console.log(this.selected)
+                this.$emit('save-track', this.selected)
             }
         },
     }

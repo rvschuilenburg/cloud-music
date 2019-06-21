@@ -40,14 +40,20 @@
             <div class="container">
                 <div class="row justify-content-center">
                     <div class="col-md-8">
-                        <router-view :queue="queue" v-on:play-track="playTrack"></router-view>
+                        <router-view 
+                            :queue="queue" 
+                            v-on:play-track="playTrack"
+                            v-on:queue-track="queueTrack"
+                            v-on:un-queue-track="unQueueTrack"
+                            v-on:save-track="saveTrack">
+                        </router-view>
                     </div>
                 </div>
             </div>
         </main>
 
         <footer class="footer mt-auto py-3">
-            <player v-bind:current-track="track"></player>
+            <player v-bind:current-track="track" v-on:playback-ended="playbackEnded"></player>
         </footer>
     </div>
 </template>
@@ -57,23 +63,52 @@
     export default {
         data: function() {
             return {
-                queue: [
-                    {title: 'Jidenna - Long Live the Chief', id: 'H_AQFnqMY3E'},
-                    {title: 'Dizzee Rascal - Bassline Junkie', id: 'D1gl46hh3sQ'},
-                    {title: 'Evol Intent - The Ladies', id: 'g1UEr6oSHsU'}
-                ],
-                track: {}
+                queue: [],
+                track: null
             }
         },
         mounted: function() {
             this.$nextTick(function() {
-                this.track = this.queue[0]
+                this.getQueue()
+                setInterval(() => { this.getQueue() }, 60000)
             })
         },
         components: { Player },
         methods: {
-           playTrack: function(track) {
+            getQueue: function() {
+                axios.get('/queue').then(response => {
+                    this.queue = response.data
+                    if(this.queue.length > 0 && this.track == null) {
+                        this.track = this.queue[0].track
+                    }
+                })
+            },
+            playTrack: function(track) {
                 this.track = track
+            },
+            saveTrack: function(track) {
+                axios.post('/track/store', track).then(response => {
+                    alert('saved!')
+                });
+            },
+            queueTrack: function(track) {
+                axios.post('/queue/store', track).then(response => {
+                    this.getQueue()
+                    alert('queued!')
+                });
+            },
+            unQueueTrack: function(track) {
+                axios.get('/queue/remove/'+track.id).then(response => {
+                    this.getQueue()
+                })
+            },
+            playbackEnded: function(track) {
+                if(this.queue.length > 0 && track == this.queue[0].track) {
+                    axios.get('/queue/remove/'+this.queue[0].id).then(response => {
+                        this.track = null
+                        this.getQueue()
+                    })
+                }
             }
         },
     }

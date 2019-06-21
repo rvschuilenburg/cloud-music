@@ -1896,14 +1896,14 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     preSelectSong: function preSelectSong() {
-      if (this.currentTrack !== {}) {
-        player.loadVideoById(this.currentTrack.id);
+      if (this.currentTrack !== null) {
+        player.loadVideoById(this.currentTrack.youtube_id);
         player.stopVideo();
       }
     },
     onPlayerStateChange: function onPlayerStateChange(event) {
       if (event.data == YT.PlayerState.ENDED) {
-        $emit('playback-ended', track);
+        this.$emit('playback-ended', this.currentTrack);
       }
     },
     playTrack: function playTrack() {
@@ -1918,8 +1918,11 @@ __webpack_require__.r(__webpack_exports__);
   },
   watch: {
     currentTrack: function currentTrack(track) {
-      if (player.loadVideoById !== undefined) {
-        player.loadVideoById(track.id);
+      if (track !== null) {
+        if (player.loadVideoById !== undefined) {
+          player.loadVideoById(track.youtube_id);
+          player.playVideo();
+        }
       }
     }
   }
@@ -1990,36 +1993,134 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      queue: [{
-        title: 'Jidenna - Long Live the Chief',
-        id: 'H_AQFnqMY3E'
-      }, {
-        title: 'Dizzee Rascal - Bassline Junkie',
-        id: 'D1gl46hh3sQ'
-      }, {
-        title: 'Evol Intent - The Ladies',
-        id: 'g1UEr6oSHsU'
-      }],
-      track: {}
+      queue: [],
+      track: null
     };
   },
   mounted: function mounted() {
     this.$nextTick(function () {
-      this.track = this.queue[0];
+      var _this = this;
+
+      this.getQueue();
+      setInterval(function () {
+        _this.getQueue();
+      }, 60000);
     });
   },
   components: {
     Player: _components_Player__WEBPACK_IMPORTED_MODULE_0__["default"]
   },
   methods: {
+    getQueue: function getQueue() {
+      var _this2 = this;
+
+      axios.get('/queue').then(function (response) {
+        _this2.queue = response.data;
+
+        if (_this2.queue.length > 0 && _this2.track == null) {
+          _this2.track = _this2.queue[0].track;
+        }
+      });
+    },
     playTrack: function playTrack(track) {
       this.track = track;
+    },
+    saveTrack: function saveTrack(track) {
+      axios.post('/track/store', track).then(function (response) {
+        alert('saved!');
+      });
+    },
+    queueTrack: function queueTrack(track) {
+      var _this3 = this;
+
+      axios.post('/queue/store', track).then(function (response) {
+        _this3.getQueue();
+
+        alert('queued!');
+      });
+    },
+    unQueueTrack: function unQueueTrack(track) {
+      var _this4 = this;
+
+      axios.get('/queue/remove/' + track.id).then(function (response) {
+        _this4.getQueue();
+      });
+    },
+    playbackEnded: function playbackEnded(track) {
+      var _this5 = this;
+
+      if (this.queue.length > 0 && track == this.queue[0].track) {
+        axios.get('/queue/remove/' + this.queue[0].id).then(function (response) {
+          _this5.track = null;
+
+          _this5.getQueue();
+        });
+      }
     }
   }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/views/Library.vue?vue&type=script&lang=js&":
+/*!*************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/views/Library.vue?vue&type=script&lang=js& ***!
+  \*************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      tracks: []
+    };
+  },
+  mounted: function mounted() {
+    this.$nextTick(function () {
+      var _this = this;
+
+      axios.get('/tracks').then(function (response) {
+        _this.tracks = response.data;
+      });
+    });
+  },
+  methods: {}
 });
 
 /***/ }),
@@ -2052,12 +2153,17 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['queue'],
   mounted: function mounted() {
-    this.$nextTick(function () {
-      console.log(this.queue);
-    });
+    this.$nextTick(function () {});
   },
   methods: {}
 });
@@ -2138,16 +2244,11 @@ __webpack_require__.r(__webpack_exports__);
       query: '',
       results: [],
       selected: {
-        id: '',
+        youtube_id: '',
         artist: '',
         title: ''
       }
     };
-  },
-  mounted: function mounted() {
-    this.$nextTick(function () {
-      console.log(this.queue);
-    });
   },
   methods: {
     submitSearch: function submitSearch() {
@@ -2171,7 +2272,7 @@ __webpack_require__.r(__webpack_exports__);
     previewTrack: function previewTrack(result) {
       var track = {
         title: result.snippet.title,
-        id: result.id.videoId
+        youtube_id: result.id.videoId
       };
       this.$emit('play-track', track);
     },
@@ -2187,7 +2288,7 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       var selected = {
-        id: result.id.videoId,
+        youtube_id: result.id.videoId,
         artist: artist,
         title: title
       };
@@ -2196,8 +2297,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     saveTrack: function saveTrack() {
       $('#trackModal').modal('hide');
-      alert('saving track!');
-      console.log(this.selected);
+      this.$emit('save-track', this.selected);
     }
   }
 });
@@ -37633,7 +37733,12 @@ var render = function() {
             [
               _c("router-view", {
                 attrs: { queue: _vm.queue },
-                on: { "play-track": _vm.playTrack }
+                on: {
+                  "play-track": _vm.playTrack,
+                  "queue-track": _vm.queueTrack,
+                  "un-queue-track": _vm.unQueueTrack,
+                  "save-track": _vm.saveTrack
+                }
               })
             ],
             1
@@ -37645,7 +37750,12 @@ var render = function() {
     _c(
       "footer",
       { staticClass: "footer mt-auto py-3" },
-      [_c("player", { attrs: { "current-track": _vm.track } })],
+      [
+        _c("player", {
+          attrs: { "current-track": _vm.track },
+          on: { "playback-ended": _vm.playbackEnded }
+        })
+      ],
       1
     )
   ])
@@ -37745,23 +37855,74 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm._m(0)
+  return _c("div", [
+    _c("div", { staticClass: "card" }, [
+      _c("div", { staticClass: "card-header" }, [_vm._v("Library")]),
+      _vm._v(" "),
+      _c("div", { staticClass: "card-body" }, [
+        _c(
+          "table",
+          { staticClass: "table" },
+          [
+            _vm._m(0),
+            _vm._v(" "),
+            _vm._l(_vm.tracks, function(track) {
+              return _c("tr", [
+                _c("td", [_vm._v(_vm._s(track.artist))]),
+                _vm._v(" "),
+                _c("td", [_vm._v(_vm._s(track.title))]),
+                _vm._v(" "),
+                _c("td", [
+                  _c(
+                    "a",
+                    {
+                      staticClass: "btn-primary btn-sm",
+                      attrs: { href: "" },
+                      on: {
+                        click: function($event) {
+                          $event.preventDefault()
+                          return _vm.$emit("play-track", track)
+                        }
+                      }
+                    },
+                    [_vm._v("play")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "a",
+                    {
+                      staticClass: "btn-primary btn-sm",
+                      attrs: { href: "" },
+                      on: {
+                        click: function($event) {
+                          $event.preventDefault()
+                          return _vm.$emit("queue-track", track)
+                        }
+                      }
+                    },
+                    [_vm._v("queue")]
+                  )
+                ])
+              ])
+            })
+          ],
+          2
+        )
+      ])
+    ])
+  ])
 }
 var staticRenderFns = [
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", [
-      _c("div", { staticClass: "card" }, [
-        _c("div", { staticClass: "card-header" }, [_vm._v("Library")]),
-        _vm._v(" "),
-        _c("div", { staticClass: "card-body" }, [
-          _vm._v(
-            "\n            This should show all tracks in your library\n        "
-          )
-        ])
-      ])
+    return _c("tr", [
+      _c("th", [_vm._v("Artist")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Title")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Action")])
     ])
   }
 ]
@@ -37793,26 +37954,47 @@ var render = function() {
       _c("div", { staticClass: "card-body" }, [
         _c(
           "table",
+          { staticClass: "table" },
           [
             _vm._m(0),
             _vm._v(" "),
-            _vm._l(_vm.queue, function(track) {
+            _vm._l(_vm.queue, function(item) {
               return _c("tr", [
-                _c("td", [_vm._v(_vm._s(track.title))]),
+                _c("td", [_vm._v(_vm._s(item.order))]),
+                _vm._v(" "),
+                _c("td", [_vm._v(_vm._s(item.track.artist))]),
+                _vm._v(" "),
+                _c("td", [_vm._v(_vm._s(item.track.title))]),
                 _vm._v(" "),
                 _c("td", [
                   _c(
                     "a",
                     {
+                      staticClass: "btn-primary btn-sm",
                       attrs: { href: "" },
                       on: {
                         click: function($event) {
                           $event.preventDefault()
-                          return _vm.$emit("play-track", track)
+                          return _vm.$emit("play-track", item.track)
                         }
                       }
                     },
                     [_vm._v(" play ")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "a",
+                    {
+                      staticClass: "btn-danger btn-sm",
+                      attrs: { href: "" },
+                      on: {
+                        click: function($event) {
+                          $event.preventDefault()
+                          return _vm.$emit("un-queue-track", item)
+                        }
+                      }
+                    },
+                    [_vm._v(" remove ")]
                   )
                 ])
               ])
@@ -37830,7 +38012,11 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("tr", [
-      _c("th", [_vm._v("Track")]),
+      _c("th", [_vm._v("#")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Artist")]),
+      _vm._v(" "),
+      _c("th", [_vm._v("Title")]),
       _vm._v(" "),
       _c("th", [_vm._v("Action")])
     ])
@@ -53203,15 +53389,17 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Library_vue_vue_type_template_id_126a3928___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Library.vue?vue&type=template&id=126a3928& */ "./resources/js/views/Library.vue?vue&type=template&id=126a3928&");
-/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* harmony import */ var _Library_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Library.vue?vue&type=script&lang=js& */ "./resources/js/views/Library.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
-var script = {}
+
+
 
 
 /* normalize component */
 
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_1__["default"])(
-  script,
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _Library_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
   _Library_vue_vue_type_template_id_126a3928___WEBPACK_IMPORTED_MODULE_0__["render"],
   _Library_vue_vue_type_template_id_126a3928___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
   false,
@@ -53225,6 +53413,20 @@ var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_
 if (false) { var api; }
 component.options.__file = "resources/js/views/Library.vue"
 /* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/views/Library.vue?vue&type=script&lang=js&":
+/*!*****************************************************************!*\
+  !*** ./resources/js/views/Library.vue?vue&type=script&lang=js& ***!
+  \*****************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Library_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./Library.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/views/Library.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Library_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
 
 /***/ }),
 

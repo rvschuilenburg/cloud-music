@@ -35,4 +35,14 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function tracks()
+    {
+        return $this->hasMany('App\Track');
+    }
+
+    public function queue()
+    {
+        return $this->hasMany('App\Queue');
+    }
 }

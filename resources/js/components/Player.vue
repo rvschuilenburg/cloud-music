@@ -27,14 +27,14 @@
         },
         methods: {
             preSelectSong: function() {
-                if(this.currentTrack !== {}) {
-                    player.loadVideoById(this.currentTrack.id)
+                if(this.currentTrack !== null) {
+                    player.loadVideoById(this.currentTrack.youtube_id)
                     player.stopVideo()
                 }
             },
             onPlayerStateChange: function(event) {
                 if (event.data == YT.PlayerState.ENDED) {
-                    $emit('playback-ended', track)
+                    this.$emit('playback-ended', this.currentTrack)
                 }
             },
             playTrack: function() {
@@ -49,8 +49,11 @@
         },
         watch: {
             currentTrack: function (track) {
-                if (player.loadVideoById !== undefined) {
-                    player.loadVideoById(track.id)
+                if(track !== null) {
+                    if (player.loadVideoById !== undefined) {
+                        player.loadVideoById(track.youtube_id)
+                        player.playVideo()
+                    }
                 }
             },
         }
