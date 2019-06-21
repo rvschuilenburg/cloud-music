@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Track;
+use Illuminate\Http\Request;
 
 class TrackController extends Controller
 {
@@ -12,7 +12,7 @@ class TrackController extends Controller
         $request->validate([
             'youtube_id' => 'required|string|max:255',
             'artist' => 'nullable|string|max:255',
-            'title' => 'nullable|string|max:255'
+            'title' => 'nullable|string|max:255',
         ]);
 
         $track = new Track;
@@ -21,6 +21,7 @@ class TrackController extends Controller
         $track->title = $request->title;
         $track->user_id = $request->user()->id;
         $track->save();
+        
         return 'OK';
     }
 

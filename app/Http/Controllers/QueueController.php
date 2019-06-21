@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Queue;
+use Illuminate\Http\Request;
 
 class QueueController extends Controller
 {
@@ -18,7 +18,7 @@ class QueueController extends Controller
         $queue = new Queue;
         $queue->track_id = $request->id;
         $queue->user_id = $request->user()->id;
-        $queue->order = $max+1;
+        $queue->order = $max + 1;
         $queue->save();
         return 'OK';
     }
