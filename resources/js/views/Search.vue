@@ -46,7 +46,7 @@
                         <label class="col-form-label">Title:</label>
                         <input type="text" class="form-control" v-model="selected.title">
                       </div>
-                      <input type="submit" style="display:none" />
+                      <input type="submit" style="visibility:hidden" />
                     </form>
                   </div>
                   <div class="modal-footer">
@@ -83,7 +83,7 @@
                 })
                 .then((response) => {
                     this.results = response.data.items
-                });  
+                });
             },
             previewTrack: function(result) {
                 var track = { title: result.snippet.title, youtube_id: result.id.videoId }

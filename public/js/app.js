@@ -47201,14 +47201,16 @@ var render = function() {
     _c("div", { staticClass: "row" }, [
       _vm._m(0),
       _vm._v(" "),
-      _c("div", { staticClass: "col-11" }, [
-        _c("h2", [
-          _vm._v(
-            _vm._s(this.currentTrack.artist) +
-              " - " +
-              _vm._s(this.currentTrack.title)
-          )
-        ]),
+      _c("div", { staticClass: "col" }, [
+        this.currentTrack
+          ? _c("h2", [
+              _vm._v(
+                _vm._s(this.currentTrack.artist) +
+                  " - " +
+                  _vm._s(this.currentTrack.title)
+              )
+            ])
+          : _vm._e(),
         _vm._v(" "),
         _c(
           "a",
@@ -47266,7 +47268,7 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col" }, [
+    return _c("div", { staticClass: "col-2" }, [
       _c("div", { attrs: { id: "player" } })
     ])
   }
@@ -47917,7 +47919,7 @@ var render = function() {
                     ]),
                     _vm._v(" "),
                     _c("input", {
-                      staticStyle: { display: "none" },
+                      staticStyle: { visibility: "hidden" },
                       attrs: { type: "submit" }
                     })
                   ]
@@ -63281,8 +63283,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /var/www/cloud-music/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /var/www/cloud-music/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /Users/robin/Code/cloud-music/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /Users/robin/Code/cloud-music/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

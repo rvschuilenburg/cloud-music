@@ -1,11 +1,11 @@
 <template>
     <div class="container-fluid">
         <div class="row">
-            <div class="col">
+            <div class="col-2">
                 <div id="player"></div>
             </div>
-            <div class="col-11">
-                <h2>{{ this.currentTrack.artist }} - {{ this.currentTrack.title }}</h2>
+            <div class="col">
+                <h2 v-if="this.currentTrack">{{ this.currentTrack.artist }} - {{ this.currentTrack.title }}</h2>
                 <a class="btn-primary btn" @click.prevent="playTrack" href=""><font-awesome-icon icon="play" /></a>
                 <a class="btn-primary btn" @click.prevent="pauseTrack" href=""><font-awesome-icon icon="pause" /></a>
                 <a class="btn-primary btn" @click.prevent="stopTrack" href=""><font-awesome-icon icon="stop" /></a>
@@ -28,7 +28,7 @@
                             'onStateChange': this.onPlayerStateChange
                         }
                     })
-                    
+
                 },1000)
             })
         },
