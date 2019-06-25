@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Queue;
+use App\Track;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class QueueController extends Controller
 {
@@ -13,20 +15,22 @@ class QueueController extends Controller
             'id' => 'required|integer|max:255',
         ]);
 
-        $max = $request->user()->queue()->max('order');
+        $track = Track::find($request->id);
 
-        $queue = new Queue;
-        $queue->track_id = $request->id;
-        $queue->user_id = $request->user()->id;
-        $queue->order = $max + 1;
-        $queue->save();
+        $this->addToQueue($track);
 
         return 'OK';
     }
 
     public function index(Request $request)
     {
-        return $request->user()->queue()->with('track')->get();
+        // if the queue is empty, add a random song for playback
+        $count = Auth::user()->queue()->count();
+        if ($count == 0) {
+            $random_track = Auth::user()->tracks()->inRandomOrder()->first();
+            $this->addToQueue($random_track);
+        }
+        return Auth::user()->queue()->with('track')->get();
     }
 
     public function remove(Queue $queue)
@@ -34,5 +38,16 @@ class QueueController extends Controller
         $queue->delete();
 
         return 'OK';
+    }
+
+    private function addToQueue(Track $track)
+    {
+        $max =  Auth::user()->queue()->max('order');
+
+        $queue = new Queue;
+        $queue->track_id = $track->id;
+        $queue->user_id = Auth::user()->id;
+        $queue->order = $max + 1;
+        return $queue->save();
     }
 }

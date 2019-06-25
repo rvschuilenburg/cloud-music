@@ -15,6 +15,7 @@
                         <td>
                             <a class="btn-primary btn-sm" @click.prevent="$emit('play-track', track)" href=""><font-awesome-icon icon="play" /></a>
                             <a class="btn-primary btn-sm" @click.prevent="$emit('queue-track', track)" href=""><font-awesome-icon icon="list" /></a>
+                            <a class="btn-danger btn-sm" @click.prevent="removeTrack(track)" href=""><font-awesome-icon icon="trash" /></a>
                         </td>
                     </tr>
                 </table>
@@ -31,13 +32,20 @@
         },
         mounted: function() {
             this.$nextTick(function() {
-                axios.get('/tracks').then(response => {
-                    this.tracks = response.data
-                })
+                this.getLibrary()
             })
         },
         methods: {
-            
+            getLibrary() {
+                axios.get('/tracks').then(response => {
+                    this.tracks = response.data
+                })
+            },
+            removeTrack(track) {
+                axios.get('/track/remove/'+track.id).then(response => {
+                    this.getLibrary()
+                })
+            }
         },
     }
 </script>

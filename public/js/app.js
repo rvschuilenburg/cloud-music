@@ -11708,6 +11708,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -11716,14 +11717,25 @@ __webpack_require__.r(__webpack_exports__);
   },
   mounted: function mounted() {
     this.$nextTick(function () {
+      this.getLibrary();
+    });
+  },
+  methods: {
+    getLibrary: function getLibrary() {
       var _this = this;
 
       axios.get('/tracks').then(function (response) {
         _this.tracks = response.data;
       });
-    });
-  },
-  methods: {}
+    },
+    removeTrack: function removeTrack(track) {
+      var _this2 = this;
+
+      axios.get('/track/remove/' + track.id).then(function (response) {
+        _this2.getLibrary();
+      });
+    }
+  }
 });
 
 /***/ }),
@@ -47557,6 +47569,22 @@ var render = function() {
                       }
                     },
                     [_c("font-awesome-icon", { attrs: { icon: "list" } })],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "a",
+                    {
+                      staticClass: "btn-danger btn-sm",
+                      attrs: { href: "" },
+                      on: {
+                        click: function($event) {
+                          $event.preventDefault()
+                          return _vm.removeTrack(track)
+                        }
+                      }
+                    },
+                    [_c("font-awesome-icon", { attrs: { icon: "trash" } })],
                     1
                   )
                 ])

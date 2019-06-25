@@ -13,11 +13,15 @@
 
 Auth::routes();
 
-Route::post('/track/store', 'TrackController@store');
-Route::get('/tracks', 'TrackController@index');
-Route::get('/queue', 'QueueController@index');
-Route::post('/queue/store', 'QueueController@store');
-Route::get('/queue/remove/{queue}', 'QueueController@remove');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/tracks', 'TrackController@index');
+    Route::post('/track/store', 'TrackController@store');
+    Route::get('/track/remove/{track}', 'TrackController@remove');
 
-// Catch-all route that sends everything to the front-end, and is routed through vue-router
-Route::get('/{any}', 'HomeController@index')->where('any', '.*');
+    Route::get('/queue', 'QueueController@index');
+    Route::post('/queue/store', 'QueueController@store');
+    Route::get('/queue/remove/{queue}', 'QueueController@remove');
+
+    // Catch-all route that sends everything to the front-end, and is routed through vue-router
+    Route::get('/{any}', 'HomeController@index')->where('any', '.*');
+});

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Track;
+use App\Queue;
 use Illuminate\Http\Request;
 
 class TrackController extends Controller
@@ -28,5 +29,13 @@ class TrackController extends Controller
     public function index(Request $request)
     {
         return $request->user()->tracks;
+    }
+
+    public function remove(Track $track)
+    {
+        Queue::where('track_id', $track->id)->delete();
+        $track->delete();
+
+        return 'OK';
     }
 }
