@@ -103,7 +103,7 @@
                 })
             },
             playbackEnded: function(track) {
-                if(this.queue.length > 0 && track == this.queue[0].track) {
+                if(this.queue.length > 0 && track.id == this.queue[0].track.id) {
                     axios.get('/queue/remove/'+this.queue[0].id).then(response => {
                         this.track = null
                         this.getQueue()

@@ -11662,7 +11662,7 @@ __webpack_require__.r(__webpack_exports__);
     playbackEnded: function playbackEnded(track) {
       var _this5 = this;
 
-      if (this.queue.length > 0 && track == this.queue[0].track) {
+      if (this.queue.length > 0 && track.id == this.queue[0].track.id) {
         axios.get('/queue/remove/' + this.queue[0].id).then(function (response) {
           _this5.track = null;
 
@@ -63283,8 +63283,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/robin/Code/cloud-music/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /Users/robin/Code/cloud-music/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /var/www/cloud-music/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /var/www/cloud-music/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
